@@ -1,5 +1,6 @@
 stages:
   - build
+  - test
 
 build:
   stage: build
@@ -9,3 +10,15 @@ build:
   artifacts:
     paths:
       - ./build/libs/
+
+
+Smoke Test:
+  stage: test
+  image: openjdk:12-alpine
+  before_script:
+    - apk --no-cache add curl
+  script:
+    - java -jar ./build/libs/car-api.jar &
+    - sleep 40
+    - curl http://localhost:5000/actautor/health | grep "UP"
+  
